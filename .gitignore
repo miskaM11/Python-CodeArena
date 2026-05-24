@@ -1,0 +1,48 @@
+# System
+.DS_Store
+Thumbs.db
+ 
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+ 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+ 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+ 
+# Environment
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.pem
+ 
+# Logs
+*.log
+logs/
+ 
+# Build/cache
+dist/
+build/
+.cache/
+node_modules/
+ 
+# Claude local
+.claude/settings.local.json
+ 
+# Temporary
+tmp/
+temp/
