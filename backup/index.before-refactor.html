@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Code Arena — Подготовка к собеседованию</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+ 
+  <style>
+    :root {
+      --bg: #070714;
+      --panel: rgba(255,255,255,0.07);
+      --panel-2: rgba(255,255,255,0.11);
+      --border: rgba(255,255,255,0.14);
+      --text: #f4f7ff;
+      --muted: #a8b1d4;
+      --accent: linear-gradient(135deg, #9b5cff, #37a5ff);
+      --green: #37f59b;
+      --red: #ff4d7d;
+      --radius: 24px;
+    }
+ 
+    [data-theme="light"] {
+      --bg: #f8f9fc;
+      --panel: rgba(0,0,0,0.06);
+      --panel-2: rgba(0,0,0,0.09);
+      --border: rgba(0,0,0,0.15);
+      --text: #1a1a2e;
+      --muted: #555577;
+    }
+ 
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    .glass { background:var(--panel); backdrop-filter:blur(22px); border:1px solid var(--border); border-radius:var(--radius); }
+ 
+    .header { position:sticky; top:0; z-index:100; background:rgba(7,7,20,0.85); backdrop-filter:blur(22px); border-bottom:1px solid var(--border); }
+    [data-theme="light"] .header { background:rgba(248,249,252,0.95); }
+ 
+    .nav { height:76px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; max-width:1280px; margin:0 auto; }
+    .logo { font-weight:900; font-size:22px; letter-spacing:-0.04em; }
+    .theme-toggle { width:50px; height:50px; border-radius:50%; background:var(--panel-2); border:1px solid var(--border); display:grid; place-items:center; font-size:24px; cursor:pointer; }
+ 
+    .hero { padding:140px 20px 100px; text-align:center; background:radial-gradient(circle at 50% 30%, rgba(155,92,255,0.25), transparent 60%); }
+    h1 { font-size:clamp(48px,8vw,88px); line-height:1.05; font-weight:900; letter-spacing:-0.06em; }
+    .gradient-text { background:var(--accent); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+ 
+    .btn { border:none; border-radius:999px; padding:14px 32px; font-weight:700; cursor:pointer; }
+    .btn.primary { background:var(--accent); color:white; }
+ 
+    .input, .select { background:rgba(0,0,0,0.25); color:var(--text); border:1px solid var(--border); border-radius:14px; padding:12px 14px; }
+ 
+    .company-tag { padding:6px 16px; border-radius:999px; font-size:13.5px; font-weight:600; cursor:pointer; border:1px solid var(--border); }
+    .company-tag.active { background:var(--accent); color:white; border:none; }
+ 
+    .task-item { padding:14px; margin-bottom:10px; cursor:pointer; transition:all 0.25s; }
+    .task-item:hover, .task-item.active { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,0.3); }
+ 
+    .hint-box, .solution-box {
+      margin-top:16px; padding:16px; background:rgba(0,0,0,0.3); border-radius:12px;
+      font-family:JetBrains Mono; white-space:pre-wrap; display:none;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+ 
+  <header class="header">
+    <div class="nav">
+      <a href="#top" class="logo"><span style="background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Py</span> Code Arena</a>
+      <div class="theme-toggle" id="themeToggle">☀️</div>
+    </div>
+  </header>
+ 
+  <main id="top">
+    <section class="hero">
+      <div style="max-width:860px;margin:0 auto;">
+        <h1><span class="gradient-text">Подготовься к собеседованию</span></h1>
+        <p style="font-size:21px;color:var(--muted);max-width:720px;margin:0 auto 40px;">
+          Практика реальных задач от ведущих IT-компаний
+        </p>
+        <a href="#trainer" class="btn primary" style="font-size:18px;padding:18px 44px;">Начать тренировку</a>
+      </div>
+    </section>
+ 
+    <section id="trainer" style="max-width:1280px;margin:0 auto;padding:60px 20px;">
+      <h2 style="text-align:center;font-size:42px;margin-bottom:40px;">Тренажёр задач</h2>
+ 
+      <div style="display:grid;grid-template-columns:320px 1fr 1.12fr;gap:20px;">
+        <!-- Левая панель -->
+        <aside class="glass" style="padding:24px;">
+          <h3>Задачи</h3>
+          <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+            <input class="input" id="searchInput" placeholder="Поиск задачи..." />
+            <select class="select" id="difficultyFilter">
+              <option value="All">Все уровни</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+            <div>
+              <label style="display:block;margin-bottom:8px;font-weight:600;">Компании</label>
+              <div id="companyFilter" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+            </div>
+          </div>
+          <div id="taskList" style="max-height:520px;overflow:auto;"></div>
+        </aside>
+ 
+        <!-- Условие -->
+        <section class="glass" style="padding:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 id="taskTitle"></h3>
+            <span id="problemBadge" class="pill"></span>
+          </div>
+          <p id="taskDescription"></p>
+          <h4>Примеры</h4>
+          <div id="examples"></div>
+ 
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button class="btn secondary" id="hintBtn">Подсказка</button>
+            <button class="btn secondary" id="solutionBtn" disabled>Решение</button>
+          </div>
+          <div id="hintBox" class="hint-box glass"></div>
+          <div id="solutionBox" class="solution-box glass"></div>
+        </section>
+ 
+        <!-- Редактор -->
+        <section class="glass" style="padding:24px;">
+          <h3>Редактор Python</h3>
+          <div style="display:grid;grid-template-columns:48px 1fr;background:rgba(0,0,0,0.4);border-radius:16px;overflow:hidden;">
+            <div id="lineNumbers" style="padding:18px 8px;text-align:right;color:#666;background:rgba(255,255,255,0.05);user-select:none;font-family:JetBrains Mono;"></div>
+            <textarea id="codeEditor" spellcheck="false" style="padding:18px;background:transparent;border:none;color:#e0e0ff;font-family:JetBrains Mono;font-size:14px;line-height:1.65;resize:vertical;min-height:420px;"></textarea>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:12px;">
+            <button class="btn primary" id="runBtn">▶ Проверить решение</button>
+            <button class="btn secondary" id="resetBtn">Сбросить</button>
+          </div>
+          <div id="console" class="glass" style="margin-top:16px;padding:16px;min-height:160px;font-family:JetBrains Mono;font-size:13.5px;"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+ 
+  <script>
+    const tasks = [
+      {id:1,title:"Магический бот",difficulty:"Easy",topic:"Строки",companies:["Яндекс","Т-Банк"],functionName:"solve",description:"Преврати обычный номер в магический: + → -, 7 → 0, убери 4 в начале и конце.",examples:[{input:"+1757656444",output:"-1050656"}],starterCode:"def solve(phone):\n    # напишите код здесь\n    pass",tests:[{input:["+1757656444"],expected:"-1050656"}],hint:"Используй replace() и startswith/endswith.",solution:"def solve(phone):\n    s = phone.replace('+', '-').replace('7', '0')\n    if s.startswith('4'): s = s[1:]\n    if s.endswith('4'): s = s[:-1]\n    return s"},
+      {id:2,title:"Встреча с духом",difficulty:"Easy",topic:"Строки",companies:["Озон"],functionName:"solve",description:"Выведи фразу 'Тебе не победить нас, имя'.",examples:[{input:"Дениска",output:"Тебе не победить нас, Дениска"}],starterCode:"def solve(name):\n    # напишите код здесь\n    pass",tests:[{input:["Дениска"],expected:"Тебе не победить нас, Дениска"}],hint:"Используй f-строку.",solution:"def solve(name):\n    return f'Тебе не победить нас, {name}'"},
+      {id:3,title:"Пальма",difficulty:"Easy",topic:"Условия",companies:["Сбер"],functionName:"solve",description:"Найди максимальную высоту из трёх пальм.",examples:[{input:"150 350 23",output:"350"}],starterCode:"def solve(a, b, c):\n    # напишите код здесь\n    pass",tests:[{input:[150,350,23],expected:350}],hint:"Используй max(a, b, c)",solution:"def solve(a, b, c):\n    return max(a, b, c)"},
+      {id:4,title:"Что с погодой?",difficulty:"Easy",topic:"Условия",companies:["Avito"],functionName:"solve",description:"Если температура > 30 — 'ЖАРА!', иначе 'тепло'.",examples:[{input:"45.5",output:"ЖАРА!"}],starterCode:"def solve(temp):\n    # напишите код здесь\n    pass",tests:[{input:[45.5],expected:"ЖАРА!"}],hint:"Простое if-else",solution:"def solve(temp):\n    return 'ЖАРА!' if temp > 30 else 'тепло'"},
+      {id:5,title:"Звездопад",difficulty:"Easy",topic:"Циклы",companies:["VK"],functionName:"solve",description:"Выведи n звёздочек.",examples:[{input:"5",output:"*****"}],starterCode:"def solve(n):\n    # напишите код здесь\n    pass",tests:[{input:[5],expected:"*****"}],hint:"'*' * n",solution:"def solve(n):\n    return '*' * n"},
+      {id:6,title:"Фунты в граммы",difficulty:"Medium",topic:"Циклы",companies:["Яндекс"],functionName:"solve",description:"Таблица фунты → граммы от 1 до 10.",examples:[{input:"",output:"1 lb = 453 g"}],starterCode:"def solve():\n    # напишите код здесь\n    pass",tests:[{input:[],expected:"1 lb = 453 g"}],hint:"Цикл for от 1 до 10",solution:"def solve():\n    for i in range(1,11):\n        print(f'{i} lb = {i*453} g')"},
+      {id:7,title:"Бутерброд",difficulty:"Medium",topic:"Функции",companies:["Т-Банк"],functionName:"make_sandwich",description:"Функция выводит ингредиенты бутерброда.",examples:[{input:"",output:"Хлеб"}],starterCode:"def make_sandwich():\n    # напишите код здесь\n    pass\n\nmake_sandwich()",tests:[{input:[],expected:"Хлеб"}],hint:"Только print() внутри функции",solution:"def make_sandwich():\n    print('Хлеб')\n    print('Котлета')\n    print('Сыр')\n    print('Помидор')\n    print('Хлеб')\n\nmake_sandwich()"},
+      {id:8,title:"Волшебных колец мастер",difficulty:"Medium",topic:"Функции",companies:["Яндекс","Сбер"],functionName:"calculate_rings",description:"Сколько колец можно сделать?",examples:[{input:"250 11",output:"2"}],starterCode:"def calculate_rings(money, gold):\n    # напишите код здесь\n    pass",tests:[{input:[250,11],expected:2}],hint:"min(money//100, gold//5)",solution:"def calculate_rings(money, gold):\n    return min(money // 100, gold // 5)"},
+      {id:9,title:"Получаем данные от пользователя",difficulty:"Hard",topic:"Списки",companies:["Озон","VK"],functionName:"solve",description:"Собери оценки школьника в список.",examples:[{input:"3\n5\n5\n5",output:"[5, 5, 5]"}],starterCode:"def solve():\n    # напишите код здесь\n    pass",tests:[{input:[],expected:"[5, 5, 5]"}],hint:"print() + input() в цикле",solution:"def solve():\n    print('Сколько оценок вы хотите ввести?')\n    n = int(input())\n    grades = [int(input()) for _ in range(n)]\n    print(grades)"}
+    ];
+ 
+    let pyodide = null;
+    let currentTask = tasks[0];
+    let progress = { solved: [], xp: 0, runs: 0, achievements: [] };
+ 
+    const el = id => document.getElementById(id);
+ 
+    function initTheme() {
+      const theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      el('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+ 
+    el('themeToggle').addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      el('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+ 
+    function renderCompanyFilter() {
+      const companies = ["Яндекс","Озон","Т-Банк","Сбер","VK","Avito","Wildberries"];
+      el('companyFilter').innerHTML = companies.map(c => `<div class="company-tag" data-company="${c}">${c}</div>`).join('');
+      document.querySelectorAll('.company-tag').forEach(tag => {
+        tag.addEventListener('click', () => { tag.classList.toggle('active'); renderTasks(); });
+      });
+    }
+ 
+    function renderTasks() {
+      const q = el('searchInput').value.toLowerCase().trim();
+      const diff = el('difficultyFilter').value;
+      const activeComps = Array.from(document.querySelectorAll('.company-tag.active')).map(t => t.dataset.company);
+ 
+      const filtered = tasks.filter(task => {
+        const byDiff = diff === "All" || task.difficulty === diff;
+        const byText = task.title.toLowerCase().includes(q) || task.topic.toLowerCase().includes(q);
+        const byCompany = activeComps.length === 0 || activeComps.some(c => task.companies.includes(c));
+        return byDiff && byText && byCompany;
+      });
+ 
+      el('taskList').innerHTML = filtered.map(task => {
+        const solved = progress.solved.includes(task.id);
+        return `<div class="task-item glass ${task.id === currentTask.id ? 'active' : ''}" onclick="selectTask(${task.id})">
+          <div style="font-weight:700;">${task.title}</div>
+          <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="pill ${task.difficulty}">${task.difficulty}</span>
+            ${task.companies.map(c => `<span style="font-size:11px;padding:2px 8px;background:rgba(255,255,255,0.1);border-radius:999px;">${c}</span>`).join('')}
+            ${solved ? `<span style="color:var(--green)">✓ Решена</span>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+ 
+    window.selectTask = (id) => {
+      currentTask = tasks.find(t => t.id === id);
+      renderCurrentTask();
+      renderTasks();
+    };
+ 
+    function renderCurrentTask() {
+      el('taskTitle').textContent = currentTask.title;
+      el('problemBadge').textContent = currentTask.difficulty;
+      el('taskDescription').textContent = currentTask.description;
+      el('examples').innerHTML = currentTask.examples.map(ex => 
+        `<div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:12px;margin:8px 0;"><b>Ввод:</b> ${ex.input}<br><b>Вывод:</b> ${ex.output}</div>`).join('');
+ 
+      el('hintBox').innerHTML = `<strong>Подсказка:</strong><br>${currentTask.hint}`;
+      el('solutionBox').innerHTML = `<strong>Решение:</strong><br>${currentTask.solution}`;
+ 
+      el('hintBox').style.display = 'none';
+      el('solutionBox').style.display = 'none';
+      el('solutionBtn').disabled = !progress.solved.includes(currentTask.id);
+ 
+      el('codeEditor').value = currentTask.starterCode;
+      updateLineNumbers();
+    }
+ 
+    function updateLineNumbers() {
+      const count = el('codeEditor').value.split('\n').length;
+      el('lineNumbers').textContent = Array.from({length: count}, (_,i) => i+1).join('\n');
+    }
+ 
+    el('hintBtn').addEventListener('click', () => {
+      el('hintBox').style.display = el('hintBox').style.display === 'block' ? 'none' : 'block';
+    });
+ 
+    el('solutionBtn').addEventListener('click', () => {
+      el('solutionBox').style.display = el('solutionBox').style.display === 'block' ? 'none' : 'block';
+    });
+ 
+    el('codeEditor').addEventListener('keydown', e => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = e.target.selectionStart;
+        e.target.value = e.target.value.substring(0,start) + "    " + e.target.value.substring(e.target.selectionEnd);
+        e.target.selectionStart = e.target.selectionEnd = start + 4;
+        updateLineNumbers();
+      }
+    });
+    el('codeEditor').addEventListener('input', updateLineNumbers);
+ 
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        toast("Python загружен ✓");
+      } catch(e) { console.error(e); }
+    }
+ 
+    async function runTests() {
+      if (!pyodide) return toast("Python ещё загружается...");
+ 
+      const userCode = el('codeEditor').value;
+      const runner = `
+import json, traceback
+user_code = ${JSON.stringify(userCode)}
+tests = json.loads('${JSON.stringify(currentTask.tests)}')
+result = {"ok": False, "tests": []}
+try:
+    namespace = {}
+    exec(user_code, namespace)
+    solve = namespace.get('${currentTask.functionName}')
+    passed = 0
+    for i, test in enumerate(tests):
+        try:
+            actual = solve(*test['input'])
+            if str(actual).strip() == str(test['expected']).strip():
+                passed += 1
+            result['tests'].append({"index": i+1, "passed": True})
+        except:
+            result['tests'].append({"index": i+1, "passed": False})
+    result['ok'] = passed == len(tests)
+except Exception as e:
+    result['error'] = str(e)
+json.dumps(result)
+`;
+      try {
+        const output = await pyodide.runPythonAsync(runner);
+        const res = JSON.parse(output);
+ 
+        if (res.ok) {
+          el('console').innerHTML = `<span style="color:var(--green);font-weight:700;">✅ Все тесты пройдены!</span>`;
+          if (!progress.solved.includes(currentTask.id)) {
+            progress.solved.push(currentTask.id);
+            toast(`Задача решена! +${currentTask.difficulty === "Easy" ? 10 : currentTask.difficulty === "Medium" ? 25 : 50} XP`);
+          }
+          el('solutionBtn').disabled = false;
+        } else {
+          el('console').innerHTML = `<span style="color:var(--red);">❌ Есть ошибки</span>`;
+        }
+      } catch (err) {
+        el('console').innerHTML = `<span style="color:var(--red);">Ошибка выполнения</span>`;
+      }
+      renderTasks();
+    }
+ 
+    el('runBtn').addEventListener('click', runTests);
+    el('resetBtn').addEventListener('click', () => {
+      el('codeEditor').value = currentTask.starterCode;
+      updateLineNumbers();
+    });
+ 
+    function toast(msg) {
+      const t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a1a2e;color:white;padding:14px 22px;border-radius:12px;z-index:10000;';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2800);
+    }
+ 
+    window.onload = () => {
+      initTheme();
+      renderCompanyFilter();
+      renderTasks();
+      renderCurrentTask();
+      initPyodide();
+ 
+      // Фильтры
+      el('searchInput').addEventListener('input', renderTasks);
+      el('difficultyFilter').addEventListener('change', renderTasks);
+    };
+  </script>
+</body>
+</html>

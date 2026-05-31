@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(./**)",
+      "Edit(./index.html)",
+      "Edit(./README.md)",
+      "Edit(./CLAUDE.md)",
+      "Edit(./frontend/**)",
+      "Edit(./backend/**)",
+      "Edit(./docs/**)",
+      "Edit(./scripts/**)",
+      "Edit(./.claude/**)",
+      "Write(./backup/**)",
+      "Write(./frontend/**)",
+      "Write(./backend/**)",
+      "Write(./docs/**)",
+      "Write(./scripts/**)",
+      "Write(./.claude/**)",
+      "Bash(python backend/seed.py)",
+      "Bash(python backend/app.py)",
+      "Bash(pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/validate-project.ps1)",
+      "Bash(bash scripts/validate-project.sh)"
+    ],
+    "ask": [
+      "Bash(git *)",
+      "Bash(pip install *)",
+      "Bash(python -m venv *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Write(./.env)",
+      "Write(./.env.*)",
+      "Write(./secrets/**)",
+      "Bash(rm -rf *)",
+      "Bash(del /s /q *)",
+      "Bash(format *)",
+      "Bash(curl *)",
+      "Bash(wget *)"
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Code Arena — Подготовка к собеседованию</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+  <link rel="stylesheet" href="./assets/css/style.css" />
+</head>
+<body data-theme="dark">
+ 
+  <header class="header">
+    <div class="nav">
+      <a href="#top" class="logo"><span style="background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Py</span> Code Arena</a>
+      <div class="theme-toggle" id="themeToggle">☀️</div>
+    </div>
+  </header>
+ 
+  <main id="top">
+    <section class="hero">
+      <div style="max-width:860px;margin:0 auto;">
+        <h1><span class="gradient-text">Подготовься к собеседованию</span></h1>
+        <p style="font-size:21px;color:var(--muted);max-width:720px;margin:0 auto 40px;">
+          Практика реальных задач от ведущих IT-компаний
+        </p>
+        <a href="#trainer" class="btn primary" style="font-size:18px;padding:18px 44px;">Начать тренировку</a>
+      </div>
+    </section>
+ 
+    <section id="trainer" style="max-width:1280px;margin:0 auto;padding:60px 20px;">
+      <h2 style="text-align:center;font-size:42px;margin-bottom:40px;">Тренажёр задач</h2>
+ 
+      <div style="display:grid;grid-template-columns:320px 1fr 1.12fr;gap:20px;">
+        <!-- Левая панель -->
+        <aside class="glass" style="padding:24px;">
+          <h3>Задачи</h3>
+          <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+            <input class="input" id="searchInput" placeholder="Поиск задачи..." />
+            <select class="select" id="difficultyFilter">
+              <option value="All">Все уровни</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+            <div>
+              <label style="display:block;margin-bottom:8px;font-weight:600;">Компании</label>
+              <div id="companyFilter" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+            </div>
+          </div>
+          <div id="taskList" style="max-height:520px;overflow:auto;"></div>
+        </aside>
+ 
+        <!-- Условие -->
+        <section class="glass" style="padding:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 id="taskTitle"></h3>
+            <span id="problemBadge" class="pill"></span>
+          </div>
+          <p id="taskDescription"></p>
+          <h4>Примеры</h4>
+          <div id="examples"></div>
+ 
+          <div style="margin-top:24px;display:flex;gap:12px;">
+            <button class="btn secondary" id="hintBtn">Подсказка</button>
+            <button class="btn secondary" id="solutionBtn" disabled>Решение</button>
+          </div>
+          <div id="hintBox" class="hint-box glass"></div>
+          <div id="solutionBox" class="solution-box glass"></div>
+        </section>
+ 
+        <!-- Редактор -->
+        <section class="glass" style="padding:24px;">
+          <h3>Редактор Python</h3>
+          <div style="display:grid;grid-template-columns:48px 1fr;background:rgba(0,0,0,0.4);border-radius:16px;overflow:hidden;">
+            <div id="lineNumbers" style="padding:18px 8px;text-align:right;color:#666;background:rgba(255,255,255,0.05);user-select:none;font-family:JetBrains Mono;"></div>
+            <textarea id="codeEditor" spellcheck="false" style="padding:18px;background:transparent;border:none;color:#e0e0ff;font-family:JetBrains Mono;font-size:14px;line-height:1.65;resize:vertical;min-height:420px;"></textarea>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:12px;">
+            <button class="btn primary" id="runBtn">▶ Проверить решение</button>
+            <button class="btn secondary" id="resetBtn">Сбросить</button>
+          </div>
+          <div id="console" class="glass" style="margin-top:16px;padding:16px;min-height:160px;font-family:JetBrains Mono;font-size:13.5px;"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="./assets/js/app.js" defer></script>
+</body>
+</html>
