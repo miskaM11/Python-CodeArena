@@ -11,33 +11,85 @@
   <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 <body data-theme="dark">
- 
+
   <header class="header">
     <div class="nav">
-      <a href="#top" class="logo"><span style="background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Py</span> Code Arena</a>
-      <div class="theme-toggle" id="themeToggle">☀️</div>
+      <a href="#top" class="logo"><span class="logo-mark">Py</span> Code Arena</a>
+
+      <nav class="top-menu" aria-label="Главное меню">
+        <a href="#trainer" class="nav-btn">Тренажер собеседований</a>
+        <a href="#liveCoding" class="nav-btn">Лайв кодинг</a>
+        <a href="#testTasks" class="nav-btn">Тестовые задания</a>
+        <a href="#premium" class="nav-btn premium">Премиум-подписка</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="mini-progress" title="Общий прогресс">
+          <div class="mini-progress__bar"><span id="navProgressFill"></span></div>
+          <span id="navProgressText">0/0</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Сменить тему">☀️</button>
+      </div>
     </div>
   </header>
- 
+
   <main id="top">
     <section class="hero">
-      <div style="max-width:860px;margin:0 auto;">
+      <div class="hero-inner">
+        <p class="eyebrow">Python · Interview · Practice</p>
         <h1><span class="gradient-text">Подготовься к собеседованию</span></h1>
-        <p style="font-size:21px;color:var(--muted);max-width:720px;margin:0 auto 40px;">
-          Практика реальных задач от ведущих IT-компаний
+        <p class="hero-text">
+          Практика реальных задач от ведущих IT-компаний. Решай, проверяй код и отслеживай прогресс.
         </p>
-        <a href="#trainer" class="btn primary" style="font-size:18px;padding:18px 44px;">Начать тренировку</a>
+        <div class="hero-actions">
+          <a href="#trainer" class="btn primary">Начать тренировку</a>
+          <a href="#progressPanel" class="btn secondary">Мой прогресс</a>
+        </div>
       </div>
     </section>
- 
-    <section id="trainer" style="max-width:1280px;margin:0 auto;padding:60px 20px;">
-      <h2 style="text-align:center;font-size:42px;margin-bottom:40px;">Тренажёр задач</h2>
- 
-      <div style="display:grid;grid-template-columns:320px 1fr 1.12fr;gap:20px;">
-        <!-- Левая панель -->
-        <aside class="glass" style="padding:24px;">
-          <h3>Задачи</h3>
-          <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+
+    <section id="progressPanel" class="progress-section">
+      <div class="progress-card glass">
+        <div class="progress-card__head">
+          <div>
+            <p class="eyebrow">Progress bar</p>
+            <h2>Твой прогресс</h2>
+          </div>
+          <strong id="progressText">0 из 0 задач</strong>
+        </div>
+
+        <div class="progress-bar" aria-label="Прогресс решения задач">
+          <span id="progressFill"></span>
+        </div>
+
+        <div class="progress-grid">
+          <div>
+            <h3>По уровням сложности</h3>
+            <div id="difficultyProgress" class="stat-list"></div>
+          </div>
+          <div>
+            <h3>По компаниям</h3>
+            <div id="companyProgress" class="stat-list"></div>
+          </div>
+          <div>
+            <h3>Избранное</h3>
+            <div id="favoriteProgress" class="stat-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="trainer" class="trainer-section">
+      <h2 class="section-title">Тренажёр задач</h2>
+
+      <div class="trainer-grid">
+        <aside class="glass side-panel">
+          <div class="panel-title-row">
+            <h3>Задачи</h3>
+            <span id="visibleTasksCount" class="small-muted"></span>
+          </div>
+
+          <div class="filters">
             <input class="input" id="searchInput" placeholder="Поиск задачи..." />
             <select class="select" id="difficultyFilter">
               <option value="All">Все уровни</option>
@@ -45,48 +97,73 @@
               <option value="Medium">Medium</option>
               <option value="Hard">Hard</option>
             </select>
+            <button class="btn secondary favorite-filter" id="favoriteFilterBtn" type="button">☆ Только избранные</button>
             <div>
-              <label style="display:block;margin-bottom:8px;font-weight:600;">Компании</label>
-              <div id="companyFilter" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+              <label class="filter-label">Компании</label>
+              <div id="companyFilter" class="company-filter"></div>
             </div>
           </div>
-          <div id="taskList" style="max-height:520px;overflow:auto;"></div>
+          <div id="taskList" class="task-list"></div>
         </aside>
- 
-        <!-- Условие -->
-        <section class="glass" style="padding:24px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+
+        <section class="glass task-panel">
+          <div class="task-head">
             <h3 id="taskTitle"></h3>
             <span id="problemBadge" class="pill"></span>
           </div>
-          <p id="taskDescription"></p>
+          <p id="taskDescription" class="task-description"></p>
           <h4>Примеры</h4>
           <div id="examples"></div>
- 
-          <div style="margin-top:24px;display:flex;gap:12px;">
-            <button class="btn secondary" id="hintBtn">Подсказка</button>
-            <button class="btn secondary" id="solutionBtn" disabled>Решение</button>
+
+          <div class="task-actions">
+            <button class="btn secondary" id="hintBtn" type="button">Подсказка</button>
+            <button class="btn secondary" id="solutionBtn" type="button" disabled>Решение</button>
           </div>
           <div id="hintBox" class="hint-box glass"></div>
           <div id="solutionBox" class="solution-box glass"></div>
         </section>
- 
-        <!-- Редактор -->
-        <section class="glass" style="padding:24px;">
+
+        <section class="glass editor-panel">
           <h3>Редактор Python</h3>
-          <div style="display:grid;grid-template-columns:48px 1fr;background:rgba(0,0,0,0.4);border-radius:16px;overflow:hidden;">
-            <div id="lineNumbers" style="padding:18px 8px;text-align:right;color:#666;background:rgba(255,255,255,0.05);user-select:none;font-family:JetBrains Mono;"></div>
-            <textarea id="codeEditor" spellcheck="false" style="padding:18px;background:transparent;border:none;color:#e0e0ff;font-family:JetBrains Mono;font-size:14px;line-height:1.65;resize:vertical;min-height:420px;"></textarea>
+          <div class="code-shell">
+            <div id="lineNumbers" class="line-numbers"></div>
+            <textarea id="codeEditor" spellcheck="false"></textarea>
           </div>
-          <div style="margin-top:16px;display:flex;gap:12px;">
-            <button class="btn primary" id="runBtn">▶ Проверить решение</button>
-            <button class="btn secondary" id="resetBtn">Сбросить</button>
+          <div class="editor-actions">
+            <button class="btn primary" id="runBtn" type="button">▶ Проверить решение</button>
+            <button class="btn secondary" id="resetBtn" type="button">Сбросить</button>
           </div>
-          <div id="console" class="glass" style="margin-top:16px;padding:16px;min-height:160px;font-family:JetBrains Mono;font-size:13.5px;"></div>
+          <div id="console" class="glass console-box"></div>
         </section>
       </div>
     </section>
+
+    <section id="liveCoding" class="info-section">
+      <div class="glass info-card">
+        <p class="eyebrow">Live coding</p>
+        <h2>Лайв кодинг</h2>
+        <p>Раздел для будущего режима: задача на время, таймер, запись попыток и быстрый разбор решения.</p>
+      </div>
+    </section>
+
+    <section id="testTasks" class="info-section">
+      <div class="glass info-card">
+        <p class="eyebrow">Test tasks</p>
+        <h2>Тестовые задания</h2>
+        <p>Раздел для будущих домашних тестовых заданий: мини-проекты, API-задачи и задачи с файлами.</p>
+      </div>
+    </section>
+
+    <section id="premium" class="info-section premium-section">
+      <div class="glass info-card premium-card">
+        <p class="eyebrow">Premium</p>
+        <h2>Премиум-подписка</h2>
+        <p>Будущий раздел оформления подписки: расширенные задачи, разборы решений, рейтинг и интервью-тренировки.</p>
+        <button class="btn primary" type="button">Оформить премиум</button>
+      </div>
+    </section>
   </main>
+
   <script src="./assets/js/app.js" defer></script>
 </body>
 </html>
